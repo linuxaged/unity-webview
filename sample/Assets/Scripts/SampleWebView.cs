@@ -24,7 +24,7 @@ public class SampleWebView : MonoBehaviour
 {
 	public string Url;
 	public string SameDomainUrl;
-	public GUIText status;
+	public GameObject status;
 	WebViewObject webViewObject;
 
 	void Start()
@@ -33,52 +33,54 @@ public class SampleWebView : MonoBehaviour
 			(new GameObject("WebViewObject")).AddComponent<WebViewObject>();
 		webViewObject.Init((msg)=>{
 			Debug.Log(string.Format("CallFromJS[{0}]", msg));
-			status.text = msg;
-			status.animation.Play();
+			GUIText text = status.GetComponent<GUIText>();
+			Animation a = status.GetComponent<Animation>();
+			text.text = msg;
+			a.Play();
 		});
 		
 		webViewObject.SetMargins(5, 5, 5, 40);
 		webViewObject.SetVisibility(true);
-
-		switch (Application.platform) {
-		case RuntimePlatform.OSXEditor:
-		case RuntimePlatform.OSXPlayer:
-		case RuntimePlatform.IPhonePlayer:
-			webViewObject.LoadURL("file://" + Application.dataPath + "/WebPlayerTemplates/unity-webview/" + Url);
-			webViewObject.EvaluateJS(
-				"window.addEventListener('load', function() {" +
-				"	window.Unity = {" +
-				"		call:function(msg) {" +
-				"			var iframe = document.createElement('IFRAME');" +
-				"			iframe.setAttribute('src', 'unity:' + msg);" +
-				"			document.documentElement.appendChild(iframe);" +
-				"			iframe.parentNode.removeChild(iframe);" +
-				"			iframe = null;" +
-				"		}" +
-				"	}" +
-				"}, false);");
-			webViewObject.EvaluateJS(
-				"window.addEventListener('load', function() {" +
-				"	window.addEventListener('click', function() {" +
-				"		Unity.call('clicked');" +
-				"	}, false);" +
-				"}, false);");
-			break;
-		case RuntimePlatform.OSXWebPlayer:
-		case RuntimePlatform.WindowsWebPlayer:
-			webViewObject.LoadURL(Url);
-			webViewObject.EvaluateJS(
-				"parent.$(function() {" +
-				"	window.Unity = {" +
-				"		call:function(msg) {" +
-				"			parent.unityWebView.sendMessage('WebViewObject', msg)" +
-				"		}" +
-				"	};" +
-				"	parent.$(window).click(function() {" +
-				"		window.Unity.call('clicked');" +
-				"	});" +
-				"});");
-			break;
-		}
+		webViewObject.LoadURL(Url);
+//		switch (Application.platform) {
+//		case RuntimePlatform.OSXEditor:
+//		case RuntimePlatform.OSXPlayer:
+//		case RuntimePlatform.IPhonePlayer:
+//			webViewObject.LoadURL("file://" + Application.dataPath + "/WebPlayerTemplates/unity-webview/" + Url);
+//			webViewObject.EvaluateJS(
+//				"window.addEventListener('load', function() {" +
+//				"	window.Unity = {" +
+//				"		call:function(msg) {" +
+//				"			var iframe = document.createElement('IFRAME');" +
+//				"			iframe.setAttribute('src', 'unity:' + msg);" +
+//				"			document.documentElement.appendChild(iframe);" +
+//				"			iframe.parentNode.removeChild(iframe);" +
+//				"			iframe = null;" +
+//				"		}" +
+//				"	}" +
+//				"}, false);");
+//			webViewObject.EvaluateJS(
+//				"window.addEventListener('load', function() {" +
+//				"	window.addEventListener('click', function() {" +
+//				"		Unity.call('clicked');" +
+//				"	}, false);" +
+//				"}, false);");
+//			break;
+//		case RuntimePlatform.OSXWebPlayer:
+//		case RuntimePlatform.WindowsWebPlayer:
+//			webViewObject.LoadURL(Url);
+//			webViewObject.EvaluateJS(
+//				"parent.$(function() {" +
+//				"	window.Unity = {" +
+//				"		call:function(msg) {" +
+//				"			parent.unityWebView.sendMessage('WebViewObject', msg)" +
+//				"		}" +
+//				"	};" +
+//				"	parent.$(window).click(function() {" +
+//				"		window.Unity.call('clicked');" +
+//				"	});" +
+//				"});");
+//			break;
+//		}
 	}
 }
