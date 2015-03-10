@@ -42,6 +42,8 @@ public class UnitySendMessageDispatcher
 public class WebViewObject : MonoBehaviour
 {
 	Callback callback;
+	Callback callbackOnStartLoad;
+	Callback callbackOnFinishLoad;
 #if UNITY_EDITOR || UNITY_STANDALONE_OSX
 	IntPtr webView;
 	bool visibility;
@@ -146,6 +148,16 @@ public class WebViewObject : MonoBehaviour
 #elif UNITY_WEBPLAYER
 		Application.ExternalCall("unityWebView.init", name);
 #endif
+	}
+
+	public void OnStartLoadListener(Callback _callbackOnStartLoad = null)
+	{
+		callbackOnStartLoad = _callbackOnStartLoad;
+	}
+
+	public void OnFinishLoadListener(Callback _callbackOnFinishLoad = null)
+	{
+		callbackOnFinishLoad = _callbackOnFinishLoad;
 	}
 
 	void OnDestroy()
@@ -253,6 +265,22 @@ public class WebViewObject : MonoBehaviour
 #endif
 	}
 
+	public void OnStartLoad(string message)
+	{
+		Debug.Log ("OnStartLoad == " + message);
+		if (callbackOnStartLoad != null) {
+			callbackOnStartLoad(message);
+		}
+	}
+
+	public void OnFinishLoad(string message)
+	{
+		Debug.Log ("OnFinishLoad == " + message);
+		if (callbackOnFinishLoad != null) {
+			callbackOnFinishLoad(message);
+		}
+	}
+
 	public void CallFromJS(string message)
 	{
 		if (callback != null)
@@ -278,7 +306,7 @@ public class WebViewObject : MonoBehaviour
 		bool keyPress = false;
 		string keyChars = "";
 		short keyCode = 0;
-		if (inputString.Length > 0) {
+		if (inputString != null && inputString.Length > 0) {
 			keyPress = true;
 			keyChars = inputString.Substring(0, 1);
 			keyCode = (short)inputString[0];

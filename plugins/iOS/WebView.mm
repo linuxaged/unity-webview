@@ -96,6 +96,16 @@ extern "C" void UnitySendMessage(const char *, const char *, const char *);
 	[webView stringByEvaluatingJavaScriptFromString:jsStr];
 }
 
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+    UnitySendMessage([gameObjectName UTF8String], "OnStartLoad", "");
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    UnitySendMessage([gameObjectName UTF8String], "OnFinishLoad", "");
+}
+
 @end
 
 extern "C" {

@@ -38,6 +38,14 @@ public class SampleWebView : MonoBehaviour
 			text.text = msg;
 			a.Play();
 		});
+
+		webView.OnStartLoadListener((msg)=>{
+			Debug.Log ("Unity -> OnStartLoadListener");
+		});
+
+		webView.OnFinishLoadListener((msg)=>{
+			Debug.Log ("Unity -> OnFinishLoadListener");
+		});
 		
 		webViewObject.SetMargins(5, 5, 5, 40);
 		webViewObject.SetVisibility(true);
